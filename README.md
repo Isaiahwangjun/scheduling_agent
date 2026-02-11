@@ -57,29 +57,33 @@ python run.py
 ### LangGraph 流程
 
 ```
-                 classify
-                    │
-        ┌───────────┴───────────┐
-        │                       │
-     會議邀約                  其他
-        │                       │
-   meeting_agent                │
-   (ReAct + MCP)                │
-        │                       │
-        └───────────┬───────────┘
-                    │
-             generate_reply
-                    │
-        ┌───────────┴───────────┐
-        │                       │
-   垃圾/no-reply              其他
-        │                       │
-        │               check_guardrails
-        │                       │
-        └───────────┬───────────┘
-                    │
-                finalize
+                      classify
+                         │
+          ┌──────────────┼──────────────┐
+          │              │              │
+       會議邀約         垃圾          其他
+          │              │              │
+     meeting_agent       │              │
+     (ReAct + MCP)       │              │
+          │              │              │
+          v              │              v
+     generate_reply      │       generate_reply
+          │              │              │
+          │              │       ┌──────┴──────┐
+          │              │       │             │
+          │              │   no-reply        其他
+          │              │       │             │
+          │              │       │      check_guardrails
+          │              │       │             │
+          └──────────────┴───────┴──────┬──────┘
+                                        │
+                                    finalize
 ```
+
+- **會議邀約**: meeting_agent 處理後生成回覆
+- **垃圾**: 直接結束，不回覆
+- **其他**: 生成回覆，若為 no-reply 寄件者則跳過
+- **check_guardrails**: 檢查回覆是否包含敏感內容
 
 ### MCP 整合
 

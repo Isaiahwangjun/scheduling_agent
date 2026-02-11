@@ -1,0 +1,209 @@
+[
+  {
+    "email_id": "EM008",
+    "category": "垃圾",
+    "priority": 1,
+    "reasoning": "此郵件來自 newsletter@tech_daily.com，是典型的 Newsletter 訂閱郵件，主題為「每日技術早報」，屬於定期發送的行銷/資訊類郵件。根據分類規則，Newsletter 屬於垃圾郵件類別，優先級為 1（最低）。",
+    "needs_human_review": false
+  },
+  {
+    "email_id": "EM001",
+    "category": "急件",
+    "priority": 5,
+    "reasoning": "1. 寄件者為 boss@company.com，明確是老闆發送的郵件；2. 主題包含「緊急」關鍵字；3. 內容要求「今天下班前」完成，屬於當日截止；4. 涉及明早董事會報告，事關重大。符合急件所有條件，且為老闆發的當日截止急件，優先級為最高的 5。",
+    "guardrail_triggered": false,
+    "needs_human_review": false,
+    "reply": "主旨：Re: 緊急！明早董事會報告\n\n您好，\n\n已收到您的郵件，感謝您的提醒。\n\n我會立即檢視 A 專案簡報中的數據，並在今天下班前完成修正後回傳給您。\n\n如有任何問題，請隨時與我聯繫。\n\n小王 敬上"
+  },
+  {
+    "email_id": "EM002",
+    "category": "會議邀約",
+    "priority": 4,
+    "reasoning": "此郵件來自合作夥伴（partner@global_tech.com），內容是邀請討論 Q1 技術整合計畫並安排視訊會議，符合「會議邀約」分類。由於寄件者是合作夥伴且會議時間是隔天（1/20），屬於重要會議邀約，因此優先級為 4。",
+    "meeting_info": {
+      "date": "2026-01-20",
+      "time": "14:00-14:30",
+      "is_working_day": true,
+      "conflict": "AI 巔峰論壇 (實體活動)",
+      "added": false,
+      "reason": "1/20 為工作日，但下午 14:00-14:30 與「AI 巔峰論壇（實體活動）」（13:00-17:00）時間衝突，無法安排會議。",
+      "suggested_dates": [
+        "2026-01-20 10:00-10:30",
+        "2026-01-21 14:00-14:30",
+        "2026-01-22 14:00-14:30"
+      ]
+    },
+    "is_working_day": true,
+    "has_conflict": true,
+    "conflict_with": "AI 巔峰論壇 (實體活動)",
+    "suggested_dates": [
+      "2026-01-20 10:00-10:30",
+      "2026-01-21 14:00-14:30",
+      "2026-01-22 14:00-14:30"
+    ],
+    "guardrail_triggered": false,
+    "needs_human_review": false,
+    "reply": "您好，\n\n感謝您的來信與合作洽談邀約。\n\n關於 Q1 技術整合計畫的討論，我非常期待與您交流。不過很抱歉，1/20 下午 2:00-2:30 我已有其他行程安排，無法配合該時段。\n\n以下是我方便的替代時段，供您參考：\n- 2026/1/20（一）10:00-10:30\n- 2026/1/21（二）14:00-14:30\n- 2026/1/22（三）14:00-14:30\n\n請您看看哪個時段較為方便，再麻煩回覆讓我知道，我會盡快安排視訊會議。\n\n期待與您的合作洽談！\n\n祝 順心",
+    "calendar_action": {
+      "action": "none"
+    }
+  },
+  {
+    "email_id": "EM003",
+    "category": "垃圾",
+    "priority": 1,
+    "reasoning": "此郵件來自行銷服務網站（spam_service.net），主題包含「限時優惠」等促銷字眼，內容為典型的行銷廣告，承諾不切實際的業績成長（300%），並誘導點擊連結，符合垃圾郵件/行銷廣告的特徵。",
+    "needs_human_review": false
+  },
+  {
+    "email_id": "EM004",
+    "category": "一般",
+    "priority": 2,
+    "reasoning": "此郵件來自 HR 部門，屬於內部通知性質的員工調查問卷。雖然有截止日期（1/23），但並非當日截止，也不是老闆/主管直接發送的急件，不符合「急件」標準。內容為員工滿意度調查，屬於一般內部行政事務，因此分類為「一般」，優先級為 2（內部通知）。",
+    "guardrail_triggered": false,
+    "needs_human_review": false
+  },
+  {
+    "email_id": "EM005",
+    "category": "會議邀約",
+    "priority": 2,
+    "reasoning": "這是一封來自朋友的私人聚餐邀約，主題明確提到約時間（1/21 聚餐），內容是邀請一起吃飯，符合「邀請開會、約時間討論」的會議邀約分類。由於是私人朋友而非工作相關的重要會議或合作夥伴，優先級設為 2（一般郵件層級）。",
+    "meeting_info": {
+      "date": "2026-01-21",
+      "time": "12:00-13:00",
+      "is_working_day": true,
+      "conflict": null,
+      "added": true,
+      "reason": "1/21 為週三工作日，中午 12:00-13:00 時段無衝突，已成功安排午餐聚餐。",
+      "suggested_dates": []
+    },
+    "is_working_day": true,
+    "has_conflict": false,
+    "suggested_dates": [],
+    "guardrail_triggered": false,
+    "needs_human_review": false,
+    "reply": "嗨！\n\n好久不見！收到你的訊息真開心 😊\n\n1/21（週三）中午一起吃飯沒問題！我已經把時間空下來了，12:00-13:00 可以嗎？\n\n到時候再約個地點，期待見面聊聊！\n\nBest regards",
+    "calendar_action": {
+      "action": "add"
+    }
+  },
+  {
+    "email_id": "EM006",
+    "category": "一般",
+    "priority": 2,
+    "reasoning": "此郵件來自銀行客服，內容為信用卡帳單通知，屬於一般帳單提醒類型。不符合急件（非老闆/主管發送、標題無「緊急」）、會議邀約、詢價或垃圾郵件的分類條件。雖然有繳款截止日，但並非當日截止（1/25截止，郵件日期為1/19），因此優先級為2（一般郵件/內部通知等級）。",
+    "guardrail_triggered": false,
+    "needs_human_review": false
+  },
+  {
+    "email_id": "EM007",
+    "category": "詢價",
+    "priority": 3,
+    "reasoning": "此郵件來自潛在客戶，主題明確標示「產品詢價」，內容詢問 AI Agent 產品的報價，符合詢價分類。根據優先級規則，一般詢價為優先級 3。",
+    "guardrail_triggered": true,
+    "guardrail_reason": "詢價郵件 - 回覆內容需人工確認",
+    "needs_human_review": true,
+    "reply": "您好，\n\n感謝您對我們 AI Agent 產品的關注與詢問！\n\n我們已收到您關於 50 人部署規模的報價需求，將會有專人盡快與您聯繫，提供詳細的報價資訊。\n\n如有任何其他問題，歡迎隨時與我們聯繫。\n\n祝您順心！\n\n此致"
+  },
+  {
+    "email_id": "EM009",
+    "category": "一般",
+    "priority": 1,
+    "reasoning": "此郵件來自 Uber 的自動發送系統（no-reply@uber.com），內容為行程收據，屬於自動生成的交易通知。根據分類規則，收據類郵件歸類為「一般」，優先級為 1（收據類）。",
+    "needs_human_review": false
+  },
+  {
+    "email_id": "EM010",
+    "category": "一般",
+    "priority": 2,
+    "reasoning": "這是一封活動報名確認信，屬於通知類郵件。寄件者為論壇主辦單位，內容是確認報名成功並提供活動資訊，不屬於急件、會議邀約、詢價或垃圾郵件，因此歸類為「一般」。優先級為 2，因為這是一般通知性質的郵件。",
+    "guardrail_triggered": false,
+    "needs_human_review": false
+  },
+  {
+    "email_id": "EM011",
+    "category": "會議邀約",
+    "priority": 4,
+    "reasoning": "此郵件來自供應商 (vendor@global_parts.com)，內容是預約 2/16 早上 10:00 進行年度對帳會議，屬於「邀請開會、約時間討論」的會議邀約類型。由於是與合作夥伴（供應商）的年度結算對帳會議，屬於重要的商業往來，因此優先級設為 4。",
+    "meeting_info": {
+      "date": "2026-02-16",
+      "time": "10:00-11:00",
+      "is_working_day": false,
+      "conflict": null,
+      "added": false,
+      "reason": "2026-02-16 為除夕（國定假日），非工作日，無法安排會議",
+      "suggested_dates": [
+        "2026-02-23 10:00-11:00",
+        "2026-02-24 10:00-11:00",
+        "2026-02-25 10:00-11:00"
+      ]
+    },
+    "is_working_day": false,
+    "has_conflict": false,
+    "suggested_dates": [
+      "2026-02-23 10:00-11:00",
+      "2026-02-24 10:00-11:00",
+      "2026-02-25 10:00-11:00"
+    ],
+    "guardrail_triggered": false,
+    "needs_human_review": false,
+    "reply": "vendor@global_parts.com 您好，\n\n感謝您來信安排年度對帳會議。\n\n關於您提議的 2/16（一）早上 10:00，由於當日為除夕（國定假日），公司休假中，恐無法配合出席。\n\n建議改期至以下時段，請您參考：\n• 2026/2/23（一）10:00-11:00\n• 2026/2/24（二）10:00-11:00\n• 2026/2/25（三）10:00-11:00\n\n如上述時段方便，再請回覆確認，我將盡快安排。造成不便，敬請見諒。\n\n祝 新年快樂\n\n順頌商祺",
+    "calendar_action": {
+      "action": "none"
+    }
+  },
+  {
+    "email_id": "EM012",
+    "category": "會議邀約",
+    "priority": 3,
+    "reasoning": "此郵件來自雲端服務供應商，內容是邀請安排電話會議討論伺服器升級計畫，詢問時間是否方便。雖然主題提到「系統維護說明」，但實際內容是約時間討論（1/25 14:00 撥電話同步進度），屬於會議邀約類型。由於是外部服務供應商的一般會議邀約，非緊急事項，優先級設為 3。",
+    "meeting_info": {
+      "date": "2026-01-25",
+      "time": "14:00-15:00",
+      "is_working_day": false,
+      "conflict": null,
+      "added": false,
+      "reason": "1/25 為週日，屬於非工作日，無法安排會議",
+      "suggested_dates": [
+        "2026-01-26 14:00-15:00",
+        "2026-01-28 14:00-15:00"
+      ]
+    },
+    "is_working_day": false,
+    "has_conflict": false,
+    "suggested_dates": [
+      "2026-01-26 14:00-15:00",
+      "2026-01-28 14:00-15:00"
+    ],
+    "guardrail_triggered": false,
+    "needs_human_review": false,
+    "reply": "您好，\n\n感謝您來信通知關於託管伺服器升級計畫的會議安排。\n\n不過，1/25（週日）為非工作日，我這邊不太方便安排通話。\n\n請問以下時段是否方便呢？\n- 2026/01/26（週一）14:00-15:00\n- 2026/01/28（週三）14:00-15:00\n\n若上述時段不便，也歡迎您提供其他可行的時間，我們再另行協調。\n\n謝謝您的配合！\n\n順頌商祺",
+    "calendar_action": {
+      "action": "none"
+    }
+  },
+  {
+    "email_id": "EM013",
+    "category": "會議邀約",
+    "priority": 4,
+    "reasoning": "此郵件來自合作夥伴（partner_2@global_tech.com），內容是關於視訊會議的改期請求，希望將 1/27 的會議改到 1/23。符合「會議邀約」分類中的「改期請求」條件。由於寄件者是合作夥伴，且涉及會議時間調整需要盡快回覆確認，優先級設為 4。",
+    "meeting_info": {
+      "date": "2026-01-23",
+      "time": "14:00-16:00",
+      "is_working_day": true,
+      "conflict": null,
+      "added": true,
+      "reason": "1/23 為工作日（週五），且下午 2~4 點時段無衝突。已成功將原 1/27 的「合作廠商會議 (partner_2)」改期至新時段。",
+      "suggested_dates": []
+    },
+    "is_working_day": true,
+    "has_conflict": false,
+    "suggested_dates": [],
+    "guardrail_triggered": false,
+    "needs_human_review": false,
+    "reply": "您好，\n\n感謝您的來信通知會議時間變更。\n\n沒問題，1/23（週五）下午 2:00 ~ 4:00 的時段我這邊可以配合，已將會議時間更新至行事曆中。\n\n屆時視訊會議見，謝謝！\n\n祝 順心",
+    "calendar_action": {
+      "action": "add"
+    }
+  }
+]

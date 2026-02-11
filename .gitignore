@@ -3,4 +3,4 @@ __pycache__
 .claude
 .env
 .serena
-output/*
+*.pdf

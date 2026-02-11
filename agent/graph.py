@@ -19,27 +19,27 @@ def create_graph():
     建立 LangGraph 流程
 
     流程圖：
-                     classify
-                        │
-            ┌───────────┼───────────┐
-            │           │           │
-         會議邀約      垃圾        其他
-            │           │           │
-      meeting_agent     │    generate_reply
-      (ReAct + MCP)     │           │
-            │           │    check_guardrails
-            │           │           │
-            └───────────┴───────────┘
-                        │
-                    finalize
-                        │
-                       END
+                      classify
+                         │
+          ┌──────────────┼──────────────┐
+          │              │              │
+       會議邀約         垃圾          其他
+          │              │              │
+     meeting_agent       │       generate_reply
+          │              │              │
+     generate_reply      │       check_guardrails
+          │              │              │
+          └──────────────┴──────────────┘
+                         │
+                     finalize
+                         │
+                        END
 
     meeting_agent 中 LLM 會自主決定呼叫哪些 MCP Tools：
-    - check_working_day (本地)
-    - get_calendar_events (MCP)
-    - add_calendar_event (MCP)
-    - delete_calendar_event (MCP)
+    - check_working_day
+    - get_calendar_events
+    - add_calendar_event
+    - delete_calendar_event
     """
     graph = StateGraph(AgentState)
 
