@@ -163,9 +163,39 @@ Agent 連上 Server 後才取得 tool schema，不在程式碼寫死。符合 MC
 agent = create_react_agent(
     llm,
     tools,
+    prompt=SYSTEM_PROMPT,
     response_format=MeetingResult,
 )
 ```
+
+### 6. Prompt Cache 優化
+
+將所有 prompt 拆分為**靜態 System Message**與**動態 User Message**：
+
+```python
+# 靜態 System Prompt（可被 cache）
+SYSTEM_PROMPT = """你是一個郵件分類助理。請分析郵件並分類。
+## 分類規則
+- 急件：老闆/主管發的、標題含「緊急」、當日截止
+...
+"""
+
+# 呼叫時分離 system/user message
+messages = [
+    SystemMessage(content=SYSTEM_PROMPT),  # 靜態，跨請求可 cache
+    HumanMessage(content=f"請分類以下郵件：\n寄件者: {email['sender']}..."),  # 動態
+]
+result = structured_llm.invoke(messages)
+```
+
+**優化效果**：
+- System Prompt 在多次請求間可被 cache，減少 token 處理成本
+- 動態內容（郵件資訊、日期等）放在 User Message，不影響 cache 命中
+
+**適用節點**：
+- `classify.py` - SystemMessage + HumanMessage list
+- `generate_reply.py` - SystemMessage + HumanMessage list
+- `meeting_agent.py` - `prompt` 參數 + HumanMessage in invoke
 
 ## 測試郵件陷阱
 

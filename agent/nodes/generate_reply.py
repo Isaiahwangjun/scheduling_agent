@@ -4,6 +4,7 @@
 
 import logging
 from typing import Literal
+from langchain_core.messages import SystemMessage, HumanMessage
 from langgraph.types import Command
 from pydantic import BaseModel, Field
 
@@ -20,26 +21,8 @@ class ReplyResult(BaseModel):
     reply: str | None = Field(default=None, description="回覆內容")
 
 
-REPLY_PROMPT = """你是一個郵件回覆助理。請根據以下資訊生成適當的回覆。
-
-## 郵件資訊
-寄件者: {sender}
-主題: {subject}
-內容: {content}
-
-## 分類結果
-分類: {category}
-優先級: {priority}
-
-## 會議資訊
-{meeting_info}
-
-## 行事曆檢查結果
-是否為工作日: {is_working_day}
-非工作日原因: {non_working_reason}
-是否有衝突: {has_conflict}
-衝突事件: {conflict_with}
-建議日期: {suggested_dates}
+# 靜態 System Prompt（可被 prompt cache）
+SYSTEM_PROMPT = """你是一個郵件回覆助理。請根據郵件資訊生成適當的回覆。
 
 ## 回覆規則
 1. 垃圾郵件：不回覆
@@ -79,21 +62,33 @@ def generate_reply(state: AgentState) -> Command[Literal["check_guardrails", "fi
     llm = get_llm()
     structured_llm = llm.with_structured_output(ReplyResult)
 
-    prompt = REPLY_PROMPT.format(
-        sender=email["sender"],
-        subject=email["subject"],
-        content=email["content"],
-        category=category,
-        priority=state.get("priority", "?"),
-        meeting_info=meeting_info_str,
-        is_working_day=state.get("is_working_day", True),
-        non_working_reason=state.get("non_working_reason", "無"),
-        has_conflict=state.get("has_conflict", False),
-        conflict_with=state.get("conflict_with", "無"),
-        suggested_dates=state.get("suggested_dates", []),
-    )
+    # 分離 system/user message（支援 prompt cache）
+    messages = [
+        SystemMessage(content=SYSTEM_PROMPT),
+        HumanMessage(content=f"""請根據以下資訊生成回覆：
 
-    result: ReplyResult = structured_llm.invoke(prompt)
+## 郵件資訊
+寄件者: {email["sender"]}
+主題: {email["subject"]}
+內容: {email["content"]}
+
+## 分類結果
+分類: {category}
+優先級: {state.get("priority", "?")}
+
+## 會議資訊
+{meeting_info_str}
+
+## 行事曆檢查結果
+是否為工作日: {state.get("is_working_day", True)}
+非工作日原因: {state.get("non_working_reason", "無")}
+是否有衝突: {state.get("has_conflict", False)}
+衝突事件: {state.get("conflict_with", "無")}
+建議日期: {state.get("suggested_dates", [])}
+"""),
+    ]
+
+    result: ReplyResult = structured_llm.invoke(messages)
 
     if result.needs_reply:
         logger.info(f"[Reply] 生成回覆: {result.reply[:100]}...")

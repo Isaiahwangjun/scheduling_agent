@@ -4,6 +4,7 @@
 
 import logging
 from typing import Literal
+from langchain_core.messages import SystemMessage, HumanMessage
 from langgraph.types import Command
 from pydantic import BaseModel, Field
 
@@ -23,7 +24,8 @@ class ClassificationResult(BaseModel):
     reasoning: str = Field(description="分類理由")
 
 
-CLASSIFY_PROMPT = """你是一個郵件分類助理。請分析以下郵件並分類。
+# 靜態 System Prompt（可被 prompt cache）
+SYSTEM_PROMPT = """你是一個郵件分類助理。請分析郵件並分類。
 
 ## 分類規則
 - 急件：老闆/主管發的、標題含「緊急」、當日截止
@@ -38,12 +40,6 @@ CLASSIFY_PROMPT = """你是一個郵件分類助理。請分析以下郵件並�
 - 3: 一般會議、詢價
 - 2: 內部通知、一般郵件
 - 1: Newsletter、收據、垃圾
-
-## 郵件
-寄件者: {sender}
-主題: {subject}
-時間: {timestamp}
-內容: {content}
 """
 
 
@@ -56,14 +52,19 @@ def classify(state: AgentState) -> Command[Literal["meeting_agent", "generate_re
     llm = get_llm()
     structured_llm = llm.with_structured_output(ClassificationResult)
 
-    prompt = CLASSIFY_PROMPT.format(
-        sender=email["sender"],
-        subject=email["subject"],
-        timestamp=email["timestamp"],
-        content=email["content"],
-    )
+    # 分離 system/user message（支援 prompt cache）
+    messages = [
+        SystemMessage(content=SYSTEM_PROMPT),
+        HumanMessage(content=f"""請分類以下郵件：
 
-    result: ClassificationResult = structured_llm.invoke(prompt)
+寄件者: {email["sender"]}
+主題: {email["subject"]}
+時間: {email["timestamp"]}
+內容: {email["content"]}
+"""),
+    ]
+
+    result: ClassificationResult = structured_llm.invoke(messages)
 
     logger.info(f"[Classify] 結果: {result.category} (優先級 {result.priority})")
     logger.info(f"[Classify] 理由: {result.reasoning}")

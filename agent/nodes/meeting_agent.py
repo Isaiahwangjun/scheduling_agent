@@ -33,7 +33,8 @@ class MeetingResult(BaseModel):
     )
 
 
-SYSTEM_PROMPT = """你是會議排程助理。今天是 {today}。
+# 靜態 System Prompt（可被 prompt cache）
+SYSTEM_PROMPT = """你是會議排程助理。
 
 處理會議邀約的原則：
 1. 確認日期是否為工作日（週末和國定假日不可安排會議）
@@ -85,10 +86,12 @@ async def meeting_agent(state: AgentState) -> Command[Literal["generate_reply"]]
     agent = create_react_agent(
         llm,
         tools,
+        prompt=SYSTEM_PROMPT,  # 靜態，可被 prompt cache
         response_format=MeetingResult,
     )
 
-    prompt = f"""{SYSTEM_PROMPT.format(today=today)}
+    # 動態內容放在 user message
+    user_message = f"""今天是 {today}。
 
 郵件：
 寄件者: {email["sender"]}
@@ -96,7 +99,7 @@ async def meeting_agent(state: AgentState) -> Command[Literal["generate_reply"]]
 內容: {email["content"]}
 """
 
-    result = await agent.ainvoke({"messages": [HumanMessage(content=prompt)]})
+    result = await agent.ainvoke({"messages": [HumanMessage(content=user_message)]})
 
     # Log 執行過程
     _log_messages(result["messages"])
