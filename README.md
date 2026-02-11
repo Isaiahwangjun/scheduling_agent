@@ -73,11 +73,12 @@ python run.py
           │              │       │             │
           │              │   no-reply        其他
           │              │       │             │
-          │              │       │      check_guardrails
+          v              │       │             v
+   check_guardrails      │       │      check_guardrails
           │              │       │             │
-          └──────────────┴───────┴──────┬──────┘
-                                        │
-                                    finalize
+          └──────────────┴───────┴─────────────┘
+                                 │
+                             finalize
 ```
 
 - **會議邀約**: meeting_agent 處理後生成回覆
@@ -197,24 +198,13 @@ result = structured_llm.invoke(messages)
 - `generate_reply.py` - SystemMessage + HumanMessage list
 - `meeting_agent.py` - `prompt` 參數 + HumanMessage in invoke
 
-## 測試郵件陷阱
-
-| ID | 類型 | 陷阱 |
-|----|------|------|
-| EM002 | 會議 1/20 14:00 | 與「AI 巔峰論壇」衝突 |
-| EM005 | 會議 1/21 中午 | 與「專案開發時段」衝突 |
-| EM011 | 會議 2/16 | 除夕（非工作日） |
-| EM012 | 會議 1/25 | 週日（非工作日） |
-| EM013 | 改期 1/27→1/23 | 需刪除舊會議 |
-
 ## Production 擴展考量
 
 若部署至生產環境，會額外考慮：
 
 1. **優先級衝突處理**：高優先級會議擠掉低優先級，需人工審核
 2. **通知機制**：被調整的會議自動通知相關人員
-3. **Audit Log**：記錄所有行事曆操作
-4. **邀約類型判斷**：區分可改期（一對一會議）與不可改期（論壇/研討會）的邀約
+3. **邀約類型判斷**：區分可改期（一對一會議）與不可改期（論壇/研討會）的邀約
 
 ## 模擬日期
 
@@ -258,7 +248,7 @@ result = structured_llm.invoke(messages)
 1. 解析邀約：1/21 中午（約 12:00-13:00）
 2. check_working_day("2026-01-21") → is_working: true
 3. get_calendar_events("2026-01-21") → 發現「專案開發時段 09:00-12:00」
-4. 判斷：12:00 剛好在專案時段結束時 → 無衝突（或邊界衝突，視實作）
+4. 判斷：12:00 剛好在專案時段結束時 → 無衝突
 5. 決策：新增聚餐 12:00-13:00
 ```
 
@@ -494,7 +484,7 @@ def check_working_day(date_str: str) -> dict:
 System Prompt 只描述任務目標和原則，不寫死工具名稱：
 
 ```python
-SYSTEM_PROMPT = """你是會議排程助理。今天是 {today}。
+SYSTEM_PROMPT = """你是會議排程助理。
 
 處理會議邀約的原則：
 1. 確認日期是否為工作日（週末和國定假日不可安排會議）
